@@ -40,34 +40,73 @@ class Humidity extends StatefulWidget {
 class Humidity1 extends State<Humidity> {
   Timer timer;
 
-  /*@override
+  @override
   void initState() {
-    timer = Timer.periodic(Duration(milliseconds: 500), (_) {
+    timer = Timer.periodic(Duration(milliseconds: 5000), (_) {
       setState(() {});
     });
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Column(
         children: <Widget>[
-          Row(children: [
-            Text("Humidity:"),
-            Text('${hum}'),
+         Row(children: [
+            SizedBox(
+              width: 150,
+              height: 100,
+            ),
+            Text(
+              " HUMIDITY ",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  background: Paint()
+                    ..color = Colors.purple
+                    ..strokeWidth = 23
+                    ..strokeJoin = StrokeJoin.round
+                    ..strokeCap = StrokeCap.round
+                    ..style = PaintingStyle.stroke,
+                  color: Colors.white),
+            ),
           ]),
-          SizedBox(height: 20),
+          SizedBox(height: 30),
+          Text(
+                " Value: $hum ",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    background: Paint()
+                      ..color = Colors.orange
+                      ..strokeWidth = 20
+                      ..strokeJoin = StrokeJoin.round
+                      ..strokeCap = StrokeCap.round
+                      ..style = PaintingStyle.stroke,
+                    color: Colors.white),
+              ),
+              SizedBox(height: 30),
           Container(
-              height: 250,
-              width: 250,
+              height: 300,
+              width: 300,
+              //color: Colors.purple,
+              decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        color: Colors.yellow
+      ),
               child: SfCartesianChart(
                   primaryXAxis: NumericAxis(isVisible: false),
+                  primaryYAxis: NumericAxis(borderColor: Colors.black,labelStyle: TextStyle(color: Colors.black)),
                   series: <ChartSeries>[
                     // Renders line chart
                     LineSeries<LiveData, int>(
                         dataSource: chartData,
                         xValueMapper: (LiveData sales, _) => sales.time,
-                        yValueMapper: (LiveData sales, _) => sales.humid)
+                        yValueMapper: (LiveData sales, _) => sales.humid,
+                        markerSettings: MarkerSettings(
+                                    isVisible: true,
+                                    shape: DataMarkerType.diamond
+                                )
+                        )
+
                   ])),
         ],
       ),

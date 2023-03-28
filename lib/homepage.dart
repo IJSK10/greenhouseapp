@@ -150,6 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
       )),
       bottomNavigationBar: FloatingNavbar(
           width: 250,
+          unselectedItemColor: Colors.green,
           onTap: (int val) => setState(() => _index = val),
           currentIndex: _index,
           items: [
@@ -160,7 +161,9 @@ class _MyHomePageState extends State<MyHomePage> {
             FloatingNavbarItem(icon: Icons.gas_meter),
             FloatingNavbarItem(icon: Icons.water_sharp),
             FloatingNavbarItem(icon: Icons.water_drop_sharp)
-          ]),
+          ],
+          selectedItemColor: Colors.amber[800],
+          ),
     );
   }
 }
