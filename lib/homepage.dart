@@ -9,6 +9,8 @@ import './home.dart';
 import './gas.dart';
 import './moisture.dart';
 import 'humidity.dart';
+import './profile.dart';
+import 'package:http/http.dart' as http;
 
 enum BluetoothConnectionState {
   disconnected,
@@ -31,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   BluetoothConnection connection;
   String _messageBuffer = '';
 
-  void _onDataReceived(Uint8List data) {
+  void _onDataReceived(Uint8List data) async {
     int backspacesCounter = 0;
     data.forEach((byte) {
       if (byte == 8 || byte == 127) {
@@ -79,10 +81,18 @@ class _MyHomePageState extends State<MyHomePage> {
       print("hello${message}");
       var arr = message.split("|");
       print(arr);
+
       sett(int.parse(arr[0]));
       seth(int.parse(arr[1]));
       setm(int.parse(arr[2]),connection);
       setg(int.parse(arr[3]));
+      var url= "https://api.thingspeak.com/update?api_key=LX9Q3P3FAA4I1DK9&field1="+arr[0]+"&field2="+arr[1]+"&field3="+arr[3]+"&field4="+arr[2];
+      final response = await http.post(
+    Uri.parse(url),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  );
     }
   }
 
@@ -133,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       extendBody: true,
       body: Center(
-          child: Column(
+          child: Expanded(child: Column(
         children: [
           if (_index == 0) ...[
             Home(),
@@ -145,11 +155,13 @@ class _MyHomePageState extends State<MyHomePage> {
             Moisture(),
           ] else if (_index == 4) ...[
             Humidity(),
+          ] else if (_index == 5) ...[
+            Profile(),
           ],
         ],
-      )),
+      ))),
       bottomNavigationBar: FloatingNavbar(
-          width: 250,
+          width: 270,
           unselectedItemColor: Colors.green,
           onTap: (int val) => setState(() => _index = val),
           currentIndex: _index,
@@ -160,7 +172,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             FloatingNavbarItem(icon: Icons.gas_meter),
             FloatingNavbarItem(icon: Icons.water_sharp),
-            FloatingNavbarItem(icon: Icons.water_drop_sharp)
+            FloatingNavbarItem(icon: Icons.water_drop_sharp),
+            FloatingNavbarItem(icon: Icons.person_pin_outlined)
           ],
           selectedItemColor: Colors.amber[800],
           ),

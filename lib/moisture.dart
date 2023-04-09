@@ -20,6 +20,7 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import './notifi_service.dart';
 
 BluetoothConnection connection;
 
@@ -56,7 +57,7 @@ List<LiveData> _addDataPoint(int z) {
   return chartData;
 }
 
-int moist = 0, x = 6;
+int moist = 0, x = 6, thmo = 550;
 void setm(int a, BluetoothConnection connection1) async {
   moist = a;
   chartData = _addDataPoint(moist);
@@ -64,9 +65,16 @@ void setm(int a, BluetoothConnection connection1) async {
   //_chartSeriesController.updateDataSource(
   //  addedDataIndexes: <int>[chartData.length - 1],
   //);
-  if (moist > 550) {
+  if (moist > thmo) {
     Water();
+    NotificationService()
+              .showNotification(title: 'Soil Moisture', body: 'Soil is dry');
   }
+}
+
+void setthm(int z) {
+  thmo = z;
+  print("Gas:{$thmo}");
 }
 
 class Moisture extends StatefulWidget {
@@ -124,29 +132,30 @@ class Moisture1 extends State<Moisture> {
               )),
           SizedBox(height: 30),
           Text(
-                " Value: $moist ",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    background: Paint()
-                      ..color = Colors.orange
-                      ..strokeWidth = 20
-                      ..strokeJoin = StrokeJoin.round
-                      ..strokeCap = StrokeCap.round
-                      ..style = PaintingStyle.stroke,
-                    color: Colors.white),
-              ),
-              SizedBox(height: 30),
+            " Value: $moist ",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                background: Paint()
+                  ..color = Colors.orange
+                  ..strokeWidth = 20
+                  ..strokeJoin = StrokeJoin.round
+                  ..strokeCap = StrokeCap.round
+                  ..style = PaintingStyle.stroke,
+                color: Colors.white),
+          ),
+          SizedBox(height: 30),
           Container(
               height: 300,
               width: 300,
               //color: Colors.purple,
               decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-        color: Colors.yellow
-      ),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Colors.yellow),
               child: SfCartesianChart(
                   primaryXAxis: NumericAxis(isVisible: false),
-                  primaryYAxis: NumericAxis(borderColor: Colors.black,labelStyle: TextStyle(color: Colors.black)),
+                  primaryYAxis: NumericAxis(
+                      borderColor: Colors.black,
+                      labelStyle: TextStyle(color: Colors.black)),
                   series: <ChartSeries>[
                     // Renders line chart
                     LineSeries<LiveData, int>(
@@ -154,11 +163,7 @@ class Moisture1 extends State<Moisture> {
                         xValueMapper: (LiveData sales, _) => sales.time,
                         yValueMapper: (LiveData sales, _) => sales.moist,
                         markerSettings: MarkerSettings(
-                                    isVisible: true,
-                                    shape: DataMarkerType.diamond
-                                )
-                        )
-                        
+                            isVisible: true, shape: DataMarkerType.diamond))
                   ])),
         ],
       ),

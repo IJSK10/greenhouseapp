@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import './notifi_service.dart';
 
 import './homepage.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  NotificationService().initNotification();
   runApp(MyApp());
 }
 
@@ -11,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Greenhouse Monitoring',
-      theme:ThemeData(
+      theme: ThemeData(
         primarySwatch: Colors.purple,
         useMaterial3: true,
       ),
